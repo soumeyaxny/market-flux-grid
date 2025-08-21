@@ -61,11 +61,11 @@ export const MarketTile: React.FC<MarketTileProps> = ({
           {symbol}
         </div>
         
-        {/* Short/Long Prices */}
+        {/* Bid/Ask Prices */}
         {shortPrice !== undefined && longPrice !== undefined ? (
           <div className="text-xs font-mono leading-tight mb-1 space-y-0.5">
             <div className="flex justify-between">
-              <span className="text-destructive">S:</span>
+              <span className="text-destructive">B:</span>
               <span className="text-destructive">
                 {shortPrice.toLocaleString('en-US', {
                   minimumFractionDigits: 2,
@@ -74,7 +74,7 @@ export const MarketTile: React.FC<MarketTileProps> = ({
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-success">L:</span>
+              <span className="text-success">A:</span>
               <span className="text-success">
                 {longPrice.toLocaleString('en-US', {
                   minimumFractionDigits: 2,

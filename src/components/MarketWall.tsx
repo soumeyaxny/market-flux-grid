@@ -146,7 +146,16 @@ export const MarketWall: React.FC = () => {
     // This is called when a tile updates (for additional effects if needed)
   }, []);
 
-  const activeTiles = markets.filter(m => Date.now() - m.lastUpdate < 5000).length;
+  // Generate 50 numbers that include 1337
+  const numbersWith1337 = [
+    1337, 13370, 13371, 13372, 13373, 13374, 13375, 13376, 13377, 13378,
+    21337, 31337, 41337, 51337, 61337, 71337, 81337, 91337, 101337, 111337,
+    121337, 131337, 141337, 151337, 161337, 171337, 181337, 191337, 201337, 211337,
+    221337, 231337, 241337, 251337, 261337, 271337, 281337, 291337, 301337, 311337,
+    1337001, 1337002, 1337003, 1337004, 1337005, 1337006, 1337007, 1337008, 1337009, 1337010
+  ];
+  
+  const activeTiles = numbersWith1337[Math.floor(Math.random() * numbersWith1337.length)];
 
   return (
     <div className="min-h-screen bg-background p-4 space-y-6">
@@ -154,10 +163,10 @@ export const MarketWall: React.FC = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-mono font-bold text-foreground">
-            The 6,000-Tile Wall
+            The Rialo 1337
           </h1>
           <p className="text-muted-foreground mt-1">
-            Real-time market data visualization • Everything moving
+            Real-time market data visualization
           </p>
         </div>
       </div>

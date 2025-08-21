@@ -1,6 +1,7 @@
 # Welcome to your Lovable project
 
 ## Project info
+This is a view of real time market data updating at 6000 tile page. Each tile lights up
 
 **URL**: https://lovable.dev/projects/90b29647-4ac8-4abf-bef3-1ba8fa601084
 

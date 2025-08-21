@@ -52,6 +52,25 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				success: {
+					DEFAULT: 'hsl(var(--success))',
+					foreground: 'hsl(var(--success-foreground))'
+				},
+				// Trading specific colors
+				'price-up': 'hsl(var(--price-up))',
+				'price-down': 'hsl(var(--price-down))',
+				'price-neutral': 'hsl(var(--price-neutral))',
+				// Timeline colors  
+				'timeline-tick': 'hsl(var(--timeline-tick))',
+				'timeline-validator': 'hsl(var(--timeline-validator))',
+				'timeline-chain': 'hsl(var(--timeline-chain))',
+				'timeline-webhook': 'hsl(var(--timeline-webhook))',
+				'timeline-ui': 'hsl(var(--timeline-ui))',
+				// Metrics
+				'metric-excellent': 'hsl(var(--metric-excellent))',
+				'metric-good': 'hsl(var(--metric-good))',
+				'metric-warning': 'hsl(var(--metric-warning))',
+				'metric-critical': 'hsl(var(--metric-critical))',
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
@@ -84,11 +103,31 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'pulse-glow': {
+					'0%, 100%': { boxShadow: '0 0 10px hsl(var(--glow-primary) / 0.3)' },
+					'50%': { boxShadow: '0 0 30px hsl(var(--glow-primary) / 0.8)' }
+				},
+				'price-flash': {
+					'0%': { backgroundColor: 'transparent' },
+					'20%': { backgroundColor: 'hsl(var(--glow-primary) / 0.2)' },
+					'100%': { backgroundColor: 'transparent' }
+				},
+				'data-flow': {
+					'0%': { transform: 'translateX(-100%) scaleX(0)', opacity: '0' },
+					'50%': { transform: 'translateX(0%) scaleX(1)', opacity: '1' },
+					'100%': { transform: 'translateX(100%) scaleX(0)', opacity: '0' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
+				'price-flash': 'price-flash 0.3s ease-out',
+				'data-flow': 'data-flow 2s ease-in-out infinite'
+			},
+			fontFamily: {
+				'mono': ['JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', 'Courier New', 'monospace']
 			}
 		}
 	},

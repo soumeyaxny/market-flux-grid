@@ -146,16 +146,10 @@ export const MarketWall: React.FC = () => {
     // This is called when a tile updates (for additional effects if needed)
   }, []);
 
-  // Generate 50 numbers that include 1337
-  const numbersWith1337 = [
-    1337, 13370, 13371, 13372, 13373, 13374, 13375, 13376, 13377, 13378,
-    21337, 31337, 41337, 51337, 61337, 71337, 81337, 91337, 101337, 111337,
-    121337, 131337, 141337, 151337, 161337, 171337, 181337, 191337, 201337, 211337,
-    221337, 231337, 241337, 251337, 261337, 271337, 281337, 291337, 301337, 311337,
-    1337001, 1337002, 1337003, 1337004, 1337005, 1337006, 1337007, 1337008, 1337009, 1337010
-  ];
+  // Active tiles numbers to fluctuate between
+  const activeTileNumbers = [1337, 1340, 1409, 2111, 1339, 1593, 1337, 3712, 3441];
   
-  const activeTiles = numbersWith1337[Math.floor(Math.random() * numbersWith1337.length)];
+  const activeTiles = activeTileNumbers[Math.floor(Math.random() * activeTileNumbers.length)];
 
   return (
     <div className="min-h-screen bg-background p-4 space-y-6">

@@ -8,6 +8,8 @@ interface MarketData {
   price: number;
   change: number;
   changePercent: number;
+  shortPrice: number;
+  longPrice: number;
   volume?: number;
   lastUpdate: number;
 }
@@ -35,12 +37,16 @@ const generateCryptoData = (): MarketData[] => {
     const basePrice = basePrices[symbol] || Math.random() * 100;
     const change = (Math.random() - 0.5) * basePrice * 0.1;
     const changePercent = (change / basePrice) * 100;
+    const currentPrice = basePrice + change;
+    const spread = currentPrice * (0.001 + Math.random() * 0.004); // 0.1-0.5% spread
     
     markets.push({
       symbol,
-      price: basePrice + change,
+      price: currentPrice,
       change,
       changePercent,
+      shortPrice: currentPrice - spread / 2,
+      longPrice: currentPrice + spread / 2,
       volume: Math.floor(Math.random() * 1000000000),
       lastUpdate: Date.now()
     });
@@ -66,12 +72,16 @@ const generateCryptoData = (): MarketData[] => {
     const basePrice = Math.random() * (Math.random() < 0.7 ? 1 : 1000);
     const change = (Math.random() - 0.5) * basePrice * 0.15;
     const changePercent = (change / basePrice) * 100;
+    const currentPrice = basePrice + change;
+    const spread = currentPrice * (0.002 + Math.random() * 0.008); // 0.2-1% spread for smaller tokens
     
     markets.push({
       symbol,
-      price: basePrice + change,
+      price: currentPrice,
       change,
       changePercent,
+      shortPrice: currentPrice - spread / 2,
+      longPrice: currentPrice + spread / 2,
       volume: Math.floor(Math.random() * 10000000),
       lastUpdate: Date.now()
     });
@@ -106,12 +116,15 @@ export const MarketWall: React.FC = () => {
           const newPrice = Math.max(0.000001, market.price + priceChange);
           const change = newPrice - market.price;
           const changePercent = (change / market.price) * 100;
+          const spread = newPrice * (0.001 + Math.random() * 0.004);
           
           newMarkets[randomIndex] = {
             ...market,
             price: newPrice,
             change,
             changePercent,
+            shortPrice: newPrice - spread / 2,
+            longPrice: newPrice + spread / 2,
             lastUpdate: Date.now()
           };
         }
@@ -183,6 +196,8 @@ export const MarketWall: React.FC = () => {
               price={market.price}
               change={market.change}
               changePercent={market.changePercent}
+              shortPrice={market.shortPrice}
+              longPrice={market.longPrice}
               volume={market.volume}
               lastUpdate={market.lastUpdate}
               onUpdate={handleTileUpdate}

@@ -6,6 +6,8 @@ interface MarketTileProps {
   price: number;
   change: number;
   changePercent: number;
+  shortPrice: number;
+  longPrice: number;
   volume?: number;
   lastUpdate: number;
   onUpdate?: () => void;
@@ -16,6 +18,8 @@ export const MarketTile: React.FC<MarketTileProps> = ({
   price,
   change,
   changePercent,
+  shortPrice,
+  longPrice,
   volume,
   lastUpdate,
   onUpdate
@@ -57,12 +61,26 @@ export const MarketTile: React.FC<MarketTileProps> = ({
           {symbol}
         </div>
         
-        {/* Price */}
-        <div className="text-sm font-mono font-bold leading-tight mb-1">
-          {price.toLocaleString('en-US', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 6
-          })}
+        {/* Short/Long Prices */}
+        <div className="text-xs font-mono leading-tight mb-1 space-y-0.5">
+          <div className="flex justify-between">
+            <span className="text-destructive">S:</span>
+            <span className="text-destructive">
+              {shortPrice.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 4
+              })}
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-success">L:</span>
+            <span className="text-success">
+              {longPrice.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 4
+              })}
+            </span>
+          </div>
         </div>
         
         {/* Change */}

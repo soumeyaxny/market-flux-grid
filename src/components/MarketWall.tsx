@@ -188,7 +188,7 @@ export const MarketWall: React.FC = () => {
 
       {/* Market Grid */}
       <div className="bg-card border border-border rounded-lg p-4">
-        <div className="grid grid-cols-8 sm:grid-cols-12 md:grid-cols-16 lg:grid-cols-20 xl:grid-cols-24 2xl:grid-cols-30 gap-1">
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 2xl:grid-cols-12 gap-2 sm:gap-1">
           {markets.map((market, index) => (
             <MarketTile
               key={`${market.symbol}-${index}`}

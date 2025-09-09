@@ -2,6 +2,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { MarketTile } from './MarketTile';
 import { PerformanceMetrics } from './PerformanceMetrics';
 import { DataTimeline } from './DataTimeline';
+import { Button } from '@/components/ui/button';
+import { Trophy } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface MarketData {
   symbol: string;
@@ -213,18 +216,27 @@ export const MarketWall: React.FC = () => {
         </div>
         
         {/* Game Score */}
-        <div className="bg-card border border-border rounded-lg p-4 text-center">
-          <div className="text-2xl font-mono font-bold text-foreground">
-            {score >= 0 ? '+' : ''}{score}
-          </div>
-          <div className="text-xs text-muted-foreground mt-1">
-            SCORE
-          </div>
-          {predictions.length > 0 && (
-            <div className="text-xs text-primary mt-1">
-              {predictions.length} pending
+        <div className="flex items-center gap-4">
+          <Link to="/leaderboard">
+            <Button variant="outline" size="sm">
+              <Trophy className="h-4 w-4 mr-2" />
+              Leaderboard
+            </Button>
+          </Link>
+          
+          <div className="bg-card border border-border rounded-lg p-4 text-center">
+            <div className="text-2xl font-mono font-bold text-foreground">
+              {score >= 0 ? '+' : ''}{score}
             </div>
-          )}
+            <div className="text-xs text-muted-foreground mt-1">
+              SCORE
+            </div>
+            {predictions.length > 0 && (
+              <div className="text-xs text-primary mt-1">
+                {predictions.length} pending
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

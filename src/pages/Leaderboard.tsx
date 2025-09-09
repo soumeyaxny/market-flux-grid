@@ -59,22 +59,21 @@ const Leaderboard = () => {
     <div className="min-h-screen bg-background p-4 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Link to="/">
-            <Button variant="outline" size="sm">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Game
-            </Button>
-          </Link>
-          <div>
-            <h1 className="text-3xl font-mono font-bold text-foreground">
-              Leaderboard
-            </h1>
-            <p className="text-muted-foreground mt-1">
-              Top prediction masters of The Rialo 1337
-            </p>
-          </div>
+        <div>
+          <h1 className="text-3xl font-mono font-bold text-foreground">
+            Leaderboard
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            Top prediction masters of The Rialo 1337
+          </p>
         </div>
+        
+        <Link to="/">
+          <Button variant="outline" size="sm">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Game
+          </Button>
+        </Link>
       </div>
 
       {/* Stats Overview */}

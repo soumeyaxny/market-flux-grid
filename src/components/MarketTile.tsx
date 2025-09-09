@@ -11,6 +11,8 @@ interface MarketTileProps {
   volume?: number;
   lastUpdate: number;
   onUpdate?: () => void;
+  onPredict?: (symbol: string, currentPrice: number) => void;
+  isPredicted?: boolean;
 }
 
 export const MarketTile: React.FC<MarketTileProps> = ({
@@ -22,7 +24,9 @@ export const MarketTile: React.FC<MarketTileProps> = ({
   longPrice,
   volume,
   lastUpdate,
-  onUpdate
+  onUpdate,
+  onPredict,
+  isPredicted = false
 }) => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [previousPrice, setPreviousPrice] = useState(price);
@@ -41,14 +45,23 @@ export const MarketTile: React.FC<MarketTileProps> = ({
   const isPositive = change > 0;
   const isNegative = change < 0;
 
+  const handleClick = () => {
+    if (!isPredicted && onPredict) {
+      onPredict(symbol, price);
+    }
+  };
+
   return (
     <div
       className={cn(
-        "market-tile group relative select-none",
+        "market-tile group relative select-none cursor-pointer transition-all",
         isUpdating && "updating",
         isPositive && "positive",
-        isNegative && "negative"
+        isNegative && "negative",
+        isPredicted && "ring-2 ring-primary ring-opacity-50 bg-primary/10",
+        !isPredicted && "hover:bg-muted/50"
       )}
+      onClick={handleClick}
     >
       {/* Glow effect overlay */}
       {isUpdating && (

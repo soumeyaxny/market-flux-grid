@@ -14,6 +14,12 @@ interface MarketData {
   lastUpdate: number;
 }
 
+interface Prediction {
+  symbol: string;
+  predictedPrice: number;
+  timestamp: number;
+}
+
 // Generate realistic crypto market data
 const generateCryptoData = (): MarketData[] => {
   const cryptos = [
@@ -95,6 +101,8 @@ export const MarketWall: React.FC = () => {
   const [updatesPerSecond, setUpdatesPerSecond] = useState(0);
   const [latency, setLatency] = useState({ p50: 12.5, p95: 45.2, p99: 89.1 });
   const [updateCount, setUpdateCount] = useState(0);
+  const [score, setScore] = useState(0);
+  const [predictions, setPredictions] = useState<Prediction[]>([]);
 
   // Simulate real-time updates
   useEffect(() => {
@@ -159,6 +167,33 @@ export const MarketWall: React.FC = () => {
     // This is called when a tile updates (for additional effects if needed)
   }, []);
 
+  const handlePredict = useCallback((symbol: string, currentPrice: number) => {
+    const newPrediction: Prediction = {
+      symbol,
+      predictedPrice: currentPrice,
+      timestamp: Date.now()
+    };
+    
+    setPredictions(prev => [...prev, newPrediction]);
+    
+    // Check the prediction after 1 second
+    setTimeout(() => {
+      setMarkets(currentMarkets => {
+        const market = currentMarkets.find(m => m.symbol === symbol);
+        if (market) {
+          const priceWentUp = market.price > currentPrice;
+          setScore(prevScore => priceWentUp ? prevScore + 1 : prevScore - 1);
+        }
+        return currentMarkets;
+      });
+      
+      // Remove the prediction after checking
+      setPredictions(prev => prev.filter(p => 
+        !(p.symbol === symbol && p.timestamp === newPrediction.timestamp)
+      ));
+    }, 1000);
+  }, []);
+
   // Active tiles numbers to fluctuate between
   const activeTileNumbers = [1337, 1340, 1409, 2111, 1339, 1593, 1337, 3712, 3441];
   
@@ -170,11 +205,26 @@ export const MarketWall: React.FC = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-mono font-bold text-foreground">
-            The Rialo 1337
+            The Rialo 1337 - Prediction Game
           </h1>
           <p className="text-muted-foreground mt-1">
-            Real-time market data visualization
+            Click tiles to predict price increases. Win/lose points based on 1-second outcomes.
           </p>
+        </div>
+        
+        {/* Game Score */}
+        <div className="bg-card border border-border rounded-lg p-4 text-center">
+          <div className="text-2xl font-mono font-bold text-foreground">
+            {score >= 0 ? '+' : ''}{score}
+          </div>
+          <div className="text-xs text-muted-foreground mt-1">
+            SCORE
+          </div>
+          {predictions.length > 0 && (
+            <div className="text-xs text-primary mt-1">
+              {predictions.length} pending
+            </div>
+          )}
         </div>
       </div>
 
@@ -201,6 +251,8 @@ export const MarketWall: React.FC = () => {
               volume={market.volume}
               lastUpdate={market.lastUpdate}
               onUpdate={handleTileUpdate}
+              onPredict={handlePredict}
+              isPredicted={predictions.some(p => p.symbol === market.symbol)}
             />
           ))}
         </div>

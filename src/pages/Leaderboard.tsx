@@ -56,7 +56,8 @@ const getRankBadgeVariant = (rank: number) => {
 
 const Leaderboard = () => {
   return (
-    <div className="min-h-screen bg-background p-4 space-y-6">
+    <div className="min-h-screen bg-background p-4">
+      <div className="max-w-4xl mx-auto space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -196,6 +197,7 @@ const Leaderboard = () => {
           </div>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 };

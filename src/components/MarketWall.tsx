@@ -24,8 +24,13 @@ interface Prediction {
   timestamp: number;
 }
 
-// Generate realistic crypto market data
+// Generate realistic market data (stocks + crypto)
 const generateCryptoData = (): MarketData[] => {
+  // Magnificent 7 stocks
+  const magnificent7 = [
+    'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'TSLA', 'META'
+  ];
+
   const cryptos = [
     'BTC/USD', 'ETH/USD', 'BNB/USD', 'XRP/USD', 'ADA/USD', 'SOL/USD', 'DOGE/USD', 'DOT/USD',
     'AVAX/USD', 'SHIB/USD', 'LTC/USD', 'LINK/USD', 'UNI/USD', 'ATOM/USD', 'XLM/USD', 'BCH/USD',
@@ -33,6 +38,9 @@ const generateCryptoData = (): MarketData[] => {
   ];
   
   const basePrices: { [key: string]: number } = {
+    // Magnificent 7 stocks
+    'AAPL': 175, 'MSFT': 420, 'GOOGL': 165, 'AMZN': 155, 'NVDA': 875, 'TSLA': 245, 'META': 490,
+    // Crypto
     'BTC/USD': 45000, 'ETH/USD': 3200, 'BNB/USD': 320, 'XRP/USD': 0.65, 'ADA/USD': 0.48,
     'SOL/USD': 98, 'DOGE/USD': 0.08, 'DOT/USD': 7.2, 'AVAX/USD': 38, 'SHIB/USD': 0.000024,
     'LTC/USD': 72, 'LINK/USD': 15.5, 'UNI/USD': 6.8, 'ATOM/USD': 12.3, 'XLM/USD': 0.11,
@@ -41,6 +49,26 @@ const generateCryptoData = (): MarketData[] => {
   };
 
   const markets: MarketData[] = [];
+  
+  // Generate Magnificent 7 stocks
+  magnificent7.forEach(symbol => {
+    const basePrice = basePrices[symbol] || Math.random() * 500;
+    const change = (Math.random() - 0.5) * basePrice * 0.05; // Lower volatility for stocks
+    const changePercent = (change / basePrice) * 100;
+    const currentPrice = basePrice + change;
+    const spread = currentPrice * (0.0005 + Math.random() * 0.002); // Tighter spread for stocks
+    
+    markets.push({
+      symbol,
+      price: currentPrice,
+      change,
+      changePercent,
+      shortPrice: currentPrice - spread / 2,
+      longPrice: currentPrice + spread / 2,
+      volume: Math.floor(Math.random() * 100000000),
+      lastUpdate: Date.now()
+    });
+  });
   
   // Generate primary crypto markets
   cryptos.forEach(symbol => {
@@ -102,7 +130,7 @@ const generateCryptoData = (): MarketData[] => {
 
 export const MarketWall: React.FC = () => {
   const [allMarkets, setAllMarkets] = useState<MarketData[]>(() => generateCryptoData());
-  const [filterType, setFilterType] = useState<string>("top-24");
+  const [filterType, setFilterType] = useState<string>("magnificent-7");
   const [updatesPerSecond, setUpdatesPerSecond] = useState(0);
   const [latency, setLatency] = useState({ p50: 12.5, p95: 45.2, p99: 89.1 });
   const [updateCount, setUpdateCount] = useState(0);
@@ -112,6 +140,10 @@ export const MarketWall: React.FC = () => {
   // Filter markets based on selection
   const markets = React.useMemo(() => {
     switch (filterType) {
+      case "magnificent-7":
+        return allMarkets.filter(market => 
+          ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'TSLA', 'META'].includes(market.symbol)
+        );
       case "top-24":
         return allMarkets.slice(0, 24);
       case "top-100":
@@ -270,6 +302,7 @@ export const MarketWall: React.FC = () => {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value="magnificent-7">Magnificent 7 Stocks</SelectItem>
               <SelectItem value="top-24">Top 24 Cryptocurrencies</SelectItem>
               <SelectItem value="top-100">Top 100 Markets</SelectItem>
               <SelectItem value="top-500">Top 500 Markets</SelectItem>

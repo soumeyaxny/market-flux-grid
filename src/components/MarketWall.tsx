@@ -172,8 +172,6 @@ export const MarketWall: React.FC = () => {
         return allMarkets.filter(market => 
           ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'TSLA', 'META'].includes(market.symbol)
         );
-      case "top-24":
-        return allMarkets.slice(0, 24);
       case "top-100":
         return allMarkets.slice(0, 100);
       case "top-500":
@@ -181,7 +179,7 @@ export const MarketWall: React.FC = () => {
       case "all":
         return allMarkets;
       default:
-        return allMarkets.slice(0, 24);
+        return allMarkets;
     }
   }, [allMarkets, filterType, customTickers]);
 
@@ -332,7 +330,6 @@ export const MarketWall: React.FC = () => {
             <SelectContent>
               <SelectItem value="custom">Custom Selection</SelectItem>
               <SelectItem value="magnificent-7">Magnificent 7 Stocks</SelectItem>
-              <SelectItem value="top-24">Top 24 Cryptocurrencies</SelectItem>
               <SelectItem value="top-100">Top 100 Markets</SelectItem>
               <SelectItem value="top-500">Top 500 Markets</SelectItem>
               <SelectItem value="all">All Markets (6000)</SelectItem>

@@ -3,7 +3,8 @@ import { MarketTile } from './MarketTile';
 import { PerformanceMetrics } from './PerformanceMetrics';
 import { DataTimeline } from './DataTimeline';
 import { Button } from '@/components/ui/button';
-import { Trophy } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Trophy, Filter } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface MarketData {
@@ -100,19 +101,36 @@ const generateCryptoData = (): MarketData[] => {
 };
 
 export const MarketWall: React.FC = () => {
-  const [markets, setMarkets] = useState<MarketData[]>(() => generateCryptoData());
+  const [allMarkets, setAllMarkets] = useState<MarketData[]>(() => generateCryptoData());
+  const [filterType, setFilterType] = useState<string>("top-24");
   const [updatesPerSecond, setUpdatesPerSecond] = useState(0);
   const [latency, setLatency] = useState({ p50: 12.5, p95: 45.2, p99: 89.1 });
   const [updateCount, setUpdateCount] = useState(0);
   const [score, setScore] = useState(0);
   const [predictions, setPredictions] = useState<Prediction[]>([]);
 
+  // Filter markets based on selection
+  const markets = React.useMemo(() => {
+    switch (filterType) {
+      case "top-24":
+        return allMarkets.slice(0, 24);
+      case "top-100":
+        return allMarkets.slice(0, 100);
+      case "top-500":
+        return allMarkets.slice(0, 500);
+      case "all":
+        return allMarkets;
+      default:
+        return allMarkets.slice(0, 24);
+    }
+  }, [allMarkets, filterType]);
+
   // Simulate real-time updates
   useEffect(() => {
     const updateInterval = setInterval(() => {
       const numUpdates = Math.floor(Math.random() * 50) + 10; // 10-60 updates per tick
       
-      setMarkets(prevMarkets => {
+      setAllMarkets(prevMarkets => {
         const newMarkets = [...prevMarkets];
         
         for (let i = 0; i < numUpdates; i++) {
@@ -181,7 +199,7 @@ export const MarketWall: React.FC = () => {
     
     // Check the prediction after 1 second
     setTimeout(() => {
-      setMarkets(currentMarkets => {
+      setAllMarkets(currentMarkets => {
         const market = currentMarkets.find(m => m.symbol === symbol);
         if (market) {
           const priceWentUp = market.price > currentPrice;
@@ -240,11 +258,35 @@ export const MarketWall: React.FC = () => {
         </div>
       </div>
 
+      {/* Filter Controls */}
+      <div className="flex items-center justify-between bg-card border border-border rounded-lg p-4">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <Filter className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm font-medium text-foreground">Filter:</span>
+          </div>
+          <Select value={filterType} onValueChange={setFilterType}>
+            <SelectTrigger className="w-48">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="top-24">Top 24 Cryptocurrencies</SelectItem>
+              <SelectItem value="top-100">Top 100 Markets</SelectItem>
+              <SelectItem value="top-500">Top 500 Markets</SelectItem>
+              <SelectItem value="all">All Markets (6000)</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="text-sm text-muted-foreground">
+          Showing {markets.length.toLocaleString()} markets
+        </div>
+      </div>
+
       {/* Performance Metrics */}
       <PerformanceMetrics
         updatesPerSecond={updatesPerSecond}
         latency={latency}
-        totalTiles={6000}
+        totalTiles={allMarkets.length}
         activeTiles={activeTiles}
       />
 

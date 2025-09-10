@@ -132,7 +132,7 @@ const generateCryptoData = (): MarketData[] => {
 
 export const MarketWall: React.FC = () => {
   const [allMarkets, setAllMarkets] = useState<MarketData[]>(() => generateCryptoData());
-  const [filterType, setFilterType] = useState<string>("magnificent-7");
+  const [filterType, setFilterType] = useState<string>("all");
   const [customTickers, setCustomTickers] = useState<string[]>([]);
   const [tickerInput, setTickerInput] = useState<string>("");
   const [updatesPerSecond, setUpdatesPerSecond] = useState(0);

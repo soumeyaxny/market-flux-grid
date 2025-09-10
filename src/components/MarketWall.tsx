@@ -4,7 +4,9 @@ import { PerformanceMetrics } from './PerformanceMetrics';
 import { DataTimeline } from './DataTimeline';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Trophy, Filter } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Trophy, Filter, X, Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface MarketData {
@@ -131,15 +133,41 @@ const generateCryptoData = (): MarketData[] => {
 export const MarketWall: React.FC = () => {
   const [allMarkets, setAllMarkets] = useState<MarketData[]>(() => generateCryptoData());
   const [filterType, setFilterType] = useState<string>("magnificent-7");
+  const [customTickers, setCustomTickers] = useState<string[]>([]);
+  const [tickerInput, setTickerInput] = useState<string>("");
   const [updatesPerSecond, setUpdatesPerSecond] = useState(0);
   const [latency, setLatency] = useState({ p50: 12.5, p95: 45.2, p99: 89.1 });
   const [updateCount, setUpdateCount] = useState(0);
   const [score, setScore] = useState(0);
   const [predictions, setPredictions] = useState<Prediction[]>([]);
 
+  // Custom ticker management
+  const addCustomTicker = () => {
+    const ticker = tickerInput.trim().toUpperCase();
+    if (ticker && !customTickers.includes(ticker) && allMarkets.some(m => m.symbol === ticker)) {
+      setCustomTickers(prev => [...prev, ticker]);
+      setTickerInput("");
+    }
+  };
+
+  const removeCustomTicker = (ticker: string) => {
+    setCustomTickers(prev => prev.filter(t => t !== ticker));
+  };
+
+  const handleTickerInputKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      addCustomTicker();
+    }
+  };
+
   // Filter markets based on selection
   const markets = React.useMemo(() => {
     switch (filterType) {
+      case "custom":
+        return customTickers.length > 0 
+          ? allMarkets.filter(market => customTickers.includes(market.symbol))
+          : [];
       case "magnificent-7":
         return allMarkets.filter(market => 
           ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'TSLA', 'META'].includes(market.symbol)
@@ -155,7 +183,7 @@ export const MarketWall: React.FC = () => {
       default:
         return allMarkets.slice(0, 24);
     }
-  }, [allMarkets, filterType]);
+  }, [allMarkets, filterType, customTickers]);
 
   // Simulate real-time updates
   useEffect(() => {
@@ -302,6 +330,7 @@ export const MarketWall: React.FC = () => {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value="custom">Custom Selection</SelectItem>
               <SelectItem value="magnificent-7">Magnificent 7 Stocks</SelectItem>
               <SelectItem value="top-24">Top 24 Cryptocurrencies</SelectItem>
               <SelectItem value="top-100">Top 100 Markets</SelectItem>
@@ -314,6 +343,58 @@ export const MarketWall: React.FC = () => {
           Showing {markets.length.toLocaleString()} markets
         </div>
       </div>
+
+      {/* Custom Ticker Selection */}
+      {filterType === "custom" && (
+        <div className="bg-card border border-border rounded-lg p-4 space-y-4">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-sm font-medium text-foreground">Add tickers:</span>
+            <div className="flex items-center gap-2">
+              <Input
+                placeholder="Enter ticker (e.g., AAPL, BTC/USD)"
+                value={tickerInput}
+                onChange={(e) => setTickerInput(e.target.value)}
+                onKeyDown={handleTickerInputKeyDown}
+                className="w-48"
+              />
+              <Button 
+                size="sm" 
+                onClick={addCustomTicker}
+                disabled={!tickerInput.trim()}
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+          
+          {customTickers.length > 0 && (
+            <div className="space-y-2">
+              <span className="text-sm font-medium text-foreground">Selected tickers:</span>
+              <div className="flex flex-wrap gap-2">
+                {customTickers.map(ticker => (
+                  <Badge 
+                    key={ticker} 
+                    variant="secondary" 
+                    className="flex items-center gap-1"
+                  >
+                    {ticker}
+                    <X 
+                      className="h-3 w-3 cursor-pointer hover:text-destructive" 
+                      onClick={() => removeCustomTicker(ticker)}
+                    />
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          )}
+          
+          {customTickers.length === 0 && (
+            <div className="text-sm text-muted-foreground">
+              Add some tickers to get started. Try: AAPL, MSFT, BTC/USD, ETH/USD
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Performance Metrics */}
       <PerformanceMetrics
